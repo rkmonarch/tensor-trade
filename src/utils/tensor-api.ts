@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const baseUrl = "https://api.mainnet.tensordev.io/api/v1";
 
 export interface GetNftBuyNowTxCommand {
@@ -149,7 +151,7 @@ interface ListingsResponse {
   page: Page;
 }
 
-const TENSOR_API_KEY = `${process.env.NEXT_PUBLIC_TENSOR_KEY}`;
+const TENSOR_API_KEY = `${process.env.TENSOR_KEY}`;
 
 export async function getNftInfo(
   mintAddress: string
@@ -172,7 +174,7 @@ export async function getNftInfo(
 
 export async function getListingsByCollection(collId: string) {
   const response: ListingsResponse = await fetch(
-    `${baseUrl}/mint/active_listings?collId=${collId}&sortBy=ListingPriceAsc&limit=1`,
+    `${baseUrl}/mint/active_listings?collId=${collId}&sortBy=ListingPriceAsc&limit=100`,
     {
       method: "GET",
       headers: {
@@ -269,4 +271,40 @@ export async function getNftBidTransaction({
     console.warn(e);
     return null;
   }
+}
+
+export const helius_url = `https://mainnet.helius-rpc.com/?api-key=${process.env.HELIUS_KEY}`;
+
+export async function retrieveDASProofFields(mint: string) {
+  // query DAS API for proof info
+  const proofRes = await axios
+    .post(helius_url, {
+      jsonrpc: "2.0",
+      id: "0",
+      method: "getAssetProof",
+      params: {
+        id: mint,
+      },
+    })
+    .then((response) => {
+      return response.data.result;
+    });
+  return proofRes;
+}
+
+export async function retrieveDASAssetFields(mint: string) {
+  // query DAS API for asset info
+  const assetRes = await axios
+    .post(helius_url, {
+      jsonrpc: "2.0",
+      id: "0",
+      method: "getAsset",
+      params: {
+        id: mint,
+      },
+    })
+    .then((response) => {
+      return response.data.result;
+    });
+  return assetRes;
 }

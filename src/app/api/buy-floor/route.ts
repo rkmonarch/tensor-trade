@@ -62,7 +62,7 @@ export async function GET(req: NextRequest) {
   } as ActionGetResponse);
 }
 
-const OPTIONS = GET;
+export const OPTIONS = GET;
 
 export async function POST(req: NextRequest) {
   const collection = req.nextUrl.searchParams.get("collection");

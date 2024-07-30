@@ -1,5 +1,7 @@
 import { connection } from "./connection";
 import { Mint, getNftBuyTransaction } from "./tensor-api";
+import { HttpLink, ApolloClient, InMemoryCache, gql } from "@apollo/client";
+import { ApolloLink, concat } from "apollo-link";
 
 const SOURCE_TO_FEE_BPS = {
   TENSORSWAP: 150,
@@ -71,4 +73,54 @@ export function formatTokenAmount(num: number): string {
 
 function removeTrailingZeros(value: string): string {
   return value.replace(/\.?0+$/, "");
+}
+
+export async function retrieveLowestListingHash(slug: string) {
+  const query = `query ActiveListingsV2(
+  $slug: String!
+  $sortBy: ActiveListingsSortBy!
+  $filters: ActiveListingsFilters
+  $limit: Int
+  $cursor: ActiveListingsCursorInputV2
+) {
+  activeListingsV2(
+    slug: $slug
+    sortBy: $sortBy
+    filters: $filters
+    limit: $limit
+    cursor: $cursor
+  ) {
+    txs {
+      mint {
+        onchainId
+      }
+    }
+  }
+}`;
+  const response = await fetch("https://api.tensor.so/graphql", {
+    method: "POST",
+    headers: new Headers({
+      "X-TENSOR-API-KEY": process.env.TENSOR_KEY || "",
+      "Content-Type": "application/json",
+    }),
+    body: JSON.stringify({
+      query: query,
+      variables: {
+        slug: slug,
+        sortBy: "PriceAsc",
+        filters: {
+          sources: ["TCOMP"],
+        },
+        limit: 1,
+      },
+    }),
+  });
+  const data = await response.json();
+  console.log(data);
+  if (data.data.activeListingsV2.txs.length === 0) {
+    return { lowestBid: null };
+  }
+  return {
+    lowestBid: data.data.activeListingsV2.txs[0].mint.onchainId,
+  };
 }
