@@ -174,7 +174,7 @@ export async function getNftInfo(
 
 export async function getListingsByCollection(collId: string) {
   const response: ListingsResponse = await fetch(
-    `${baseUrl}/mint/active_listings?collId=${collId}&sortBy=ListingPriceAsc&limit=1000`,
+    `${baseUrl}/mint/active_listings?collId=${collId}&sortBy=ListingPriceAsc&limit=100`,
     {
       method: "GET",
       headers: {
