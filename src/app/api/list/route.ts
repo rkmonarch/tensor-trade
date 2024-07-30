@@ -9,9 +9,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const payload: ActionGetResponse = {
-    icon: "https://ozww27zcrtofmfkf2x7syaiooqkjwyouijf55gdlj3qgvm6k7uea.arweave.net/dm1tfyKM3FYVRdX_LAEOdBSbYdRCS96Ya07garPK_Qg?ext=png",
+    icon: "https://lh3.googleusercontent.com/L6zpv_9BKC6IyG1ZAUJ9WxQUDgXHpVU4y6i6F5_Qa5GC85KzFGsAPtKjRQny-BynM6-8HJMSUrF8ARd0gxs9nbJDV8gZPyKo0ATh",
     label: "List NFT",
-    title: "List NFT",
+    title: "List Compressed NFTs on Tensor",
     description: "List your NFT on the tensor directly through the Blinks",
     links: {
       actions: [
