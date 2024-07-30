@@ -164,5 +164,8 @@ export async function POST(req: NextRequest) {
   const payload: ActionPostResponse = {
     transaction: tx as string,
   };
-  return NextResponse.json(payload);
+  return NextResponse.json(payload, {
+    headers: ACTIONS_CORS_HEADERS,
+    status: 200,
+  });
 }
