@@ -7,6 +7,14 @@ export const GET = async () => {
         pathPattern: "/",
         apiPath: "/api/actions/share",
       },
+      {
+        pathPattern: "/lowest/*",
+        apiPath: "/api/buy-lowest/*",
+      },
+      {
+        apiPath: "/list/*",
+        pathPattern: "/api/list/*",
+      },
     ],
   };
 
