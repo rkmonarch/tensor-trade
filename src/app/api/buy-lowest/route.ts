@@ -6,7 +6,11 @@ import {
   createBuyNftTransaction,
   formatTokenAmount,
 } from "@/utils/transactions-utils";
-import { ActionGetResponse, ActionPostResponse } from "@solana/actions";
+import {
+  ACTIONS_CORS_HEADERS,
+  ActionGetResponse,
+  ActionPostResponse,
+} from "@solana/actions";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -21,6 +25,7 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 422,
+        headers: ACTIONS_CORS_HEADERS,
       }
     );
   }
@@ -40,6 +45,7 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 200,
+        headers: ACTIONS_CORS_HEADERS,
       }
     );
   }
@@ -53,6 +59,7 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 404,
+        headers: ACTIONS_CORS_HEADERS,
       }
     );
   }
@@ -76,17 +83,24 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 404,
+        headers: ACTIONS_CORS_HEADERS,
       }
     );
   }
 
   const uiPrice = formatTokenAmount(lowestPrice / LAMPORTS_PER_SOL);
-  return NextResponse.json({
-    icon: collection.imageUri,
-    label: `${uiPrice} SOL`,
-    title: `Buy lowest listed ${collection.name}`,
-    description: collection.description,
-  } as ActionGetResponse);
+  return NextResponse.json(
+    {
+      icon: collection.imageUri,
+      label: `${uiPrice} SOL`,
+      title: `Buy lowest listed ${collection.name}`,
+      description: collection.description,
+    } as ActionGetResponse,
+    {
+      headers: ACTIONS_CORS_HEADERS,
+      status: 200,
+    }
+  );
 }
 
 export const OPTIONS = GET;
@@ -102,6 +116,7 @@ export async function POST(req: NextRequest) {
         message: `Collection not found`,
       },
       {
+        headers: ACTIONS_CORS_HEADERS,
         status: 422,
       }
     );
@@ -116,6 +131,7 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 404,
+        headers: ACTIONS_CORS_HEADERS,
       }
     );
   }
@@ -139,6 +155,7 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 404,
+        headers: ACTIONS_CORS_HEADERS,
       }
     );
   }

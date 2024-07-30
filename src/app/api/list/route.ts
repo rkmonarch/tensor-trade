@@ -1,6 +1,10 @@
 import { connection } from "@/utils/connection";
 import { retrieveDASAssetFields } from "@/utils/tensor-api";
-import { ActionGetResponse, ActionPostResponse } from "@solana/actions";
+import {
+  ACTIONS_CORS_HEADERS,
+  ActionGetResponse,
+  ActionPostResponse,
+} from "@solana/actions";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -30,7 +34,10 @@ export async function GET(req: NextRequest) {
       ],
     },
   };
-  return NextResponse.json(payload);
+  return NextResponse.json(payload, {
+    headers: ACTIONS_CORS_HEADERS,
+    status: 200,
+  });
 }
 
 export const OPTIONS = GET;
@@ -107,6 +114,7 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 422,
+        headers: ACTIONS_CORS_HEADERS,
       }
     );
   }
@@ -118,6 +126,7 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 422,
+        headers: ACTIONS_CORS_HEADERS,
       }
     );
   }
@@ -134,6 +143,7 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 422,
+        headers: ACTIONS_CORS_HEADERS,
       }
     );
   }
@@ -142,5 +152,8 @@ export async function POST(req: NextRequest) {
     transaction: serializedTx,
   };
 
-  return NextResponse.json(payload);
+  return NextResponse.json(payload, {
+    headers: ACTIONS_CORS_HEADERS,
+    status: 200,
+  });
 }

@@ -7,13 +7,12 @@ import {
   formatTokenAmount,
   getTotalPrice,
 } from "../../../utils/transactions-utils";
-import { ActionGetResponse } from "@solana/actions";
+import { ACTIONS_CORS_HEADERS, ActionGetResponse } from "@solana/actions";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const collection = req.nextUrl.searchParams.get("collection");
-  // const collectionSlug = c.req.param("collectionSlug");
   const collectiond = await findCollectionBySlug(collection as string);
   if (!collectiond) {
     return NextResponse.json(
@@ -22,6 +21,7 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 422,
+        headers: ACTIONS_CORS_HEADERS,
       }
     );
   }
@@ -50,16 +50,23 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 200,
+        headers: ACTIONS_CORS_HEADERS,
       }
     );
   }
   const uiPrice = formatTokenAmount(buyNowPriceNetFees / LAMPORTS_PER_SOL);
-  return NextResponse.json({
-    icon: collectiond.imageUri,
-    label: `${uiPrice} SOL`,
-    title: `Buy Floor ${collectiond.name}`,
-    description: collectiond.description,
-  } as ActionGetResponse);
+  return NextResponse.json(
+    {
+      icon: collectiond.imageUri,
+      label: `${uiPrice} SOL`,
+      title: `Buy Floor ${collectiond.name}`,
+      description: collectiond.description,
+    } as ActionGetResponse,
+    {
+      headers: ACTIONS_CORS_HEADERS,
+      status: 200,
+    }
+  );
 }
 
 export const OPTIONS = GET;
@@ -76,6 +83,7 @@ export async function POST(req: NextRequest) {
         },
         {
           status: 422,
+          headers: ACTIONS_CORS_HEADERS,
         }
       );
     }
@@ -88,6 +96,7 @@ export async function POST(req: NextRequest) {
         },
         {
           status: 422,
+          headers: ACTIONS_CORS_HEADERS,
         }
       );
     }
@@ -98,9 +107,15 @@ export async function POST(req: NextRequest) {
       throw new Error("Failed to create transaction");
     }
 
-    return NextResponse.json({
-      transaction: transaction,
-    });
+    return NextResponse.json(
+      {
+        transaction: transaction,
+      },
+      {
+        headers: ACTIONS_CORS_HEADERS,
+        status: 200,
+      }
+    );
   } catch (e) {
     console.error(
       `Failed to prepare buy floor transaction for ${collection}`,
@@ -112,6 +127,7 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 500,
+        headers: ACTIONS_CORS_HEADERS,
       }
     );
   }
